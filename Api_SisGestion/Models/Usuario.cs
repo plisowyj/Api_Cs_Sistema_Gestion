@@ -20,6 +20,13 @@
 
         }
 
+        public Usuario(int id, string nombre, string apellido, string mail)
+        {
+            Id = id;
+            Nombre = nombre;
+            Apellido = apellido;
+            Mail = mail;
 
+        }
     }
 }

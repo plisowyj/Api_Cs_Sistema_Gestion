@@ -55,8 +55,8 @@ namespace Api_SisGestion.Controllers
             }
         }
 
-        [HttpGet("login/{u}/{p}")]
-        public IActionResult GetLogin(string u, string p)
+        [HttpPost("login/{u}/{p}")]
+        public IActionResult PostLogin(string u, string p)
         {
             dynamic conn = DBConnect.ConnDB();
 
@@ -71,7 +71,7 @@ namespace Api_SisGestion.Controllers
 
                 try
                 {
-                    using (SqlCommand cmd = new("SELECT * FROM Usuario "+
+                    using (SqlCommand cmd = new("SELECT Id, Nombre, Apellido, Mail FROM Usuario "+
                                                 "where upper(NombreUsuario) = @user " +
                                                 "and Contraseña = @pass", conn))
                     {
@@ -86,8 +86,6 @@ namespace Api_SisGestion.Controllers
                                 Usuario usuario = new(int.Parse(reader["Id"].ToString()!),
                                                         reader["Nombre"].ToString()!.ToUpper()!,
                                                         reader["Apellido"].ToString()!.ToUpper()!,
-                                                        reader["NombreUsuario"].ToString()!.ToUpper()!,
-                                                        reader["Contraseña"].ToString()!.ToUpper()!,
                                                         reader["Mail"].ToString()!.ToUpper()!);
                                 lista.Add(usuario);
                             }
