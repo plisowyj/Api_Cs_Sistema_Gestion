@@ -8,25 +8,20 @@
         public string NombreUsuario { get; set; }
         public string Contrasenia { get; set; }
         public string Mail { get; set; }
+        public byte Activo { get; set; }
 
-        public Usuario(int id, string nombre, string apellido, string nombreUsuario, string contrasenia, string mail)
+        public Usuario(int id, string nombre, string apellido, string nombreUsuario, string contrasenia, string mail, byte activo)
         {
             Id = id;
             Nombre = nombre;
             Apellido = apellido;
             NombreUsuario = nombreUsuario;
             Contrasenia = contrasenia;
-            Mail = mail;
+            Mail = mail; 
+            Activo = activo;
 
         }
 
-        public Usuario(int id, string nombre, string apellido, string mail)
-        {
-            Id = id;
-            Nombre = nombre;
-            Apellido = apellido;
-            Mail = mail;
 
-        }
     }
 }

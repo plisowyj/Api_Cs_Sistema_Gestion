@@ -44,15 +44,19 @@ namespace Api_SisGestion.Controllers
                         }
                         else
                         {
-                            return NoContent();
+                            return NotFound();
                         }
                     }
-                    conn.Close();
+                    
                     return Ok(lista);
                 }
                 catch (Exception ex)
                 {
                     return ValidationProblem(ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
                 }
             }
         }

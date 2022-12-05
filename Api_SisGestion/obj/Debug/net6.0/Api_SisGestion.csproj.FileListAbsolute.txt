@@ -31,3 +31,4 @@ C:\Users\Teletrabajo\Downloads\Api_Cs_Sistema_Gestion\Api_SisGestion\obj\Debug\n
 C:\Users\Teletrabajo\Downloads\Api_Cs_Sistema_Gestion\Api_SisGestion\obj\Debug\net6.0\Api_SisGestion.pdb
 C:\Users\Teletrabajo\Downloads\Api_Cs_Sistema_Gestion\Api_SisGestion\obj\Debug\net6.0\Api_SisGestion.genruntimeconfig.cache
 C:\Users\Teletrabajo\Downloads\Api_Cs_Sistema_Gestion\Api_SisGestion\obj\Debug\net6.0\ref\Api_SisGestion.dll
+C:\Users\Teletrabajo\Downloads\Api_Cs_Sistema_Gestion\Api_SisGestion\bin\Debug\net6.0\Newtonsoft.Json.dll
