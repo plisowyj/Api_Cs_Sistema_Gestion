@@ -93,7 +93,7 @@ namespace Api_SisGestion.Controllers
             {
                 try
                 {
-                    object column = reposiUsuario.UsuarioAdd(data);
+                    object column = reposiUsuario.UsuarioAdd(data)!;
 
                     if (column != null)
                     {

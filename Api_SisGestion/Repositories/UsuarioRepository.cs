@@ -1,4 +1,5 @@
 ﻿using Api_SisGestion.Models;
+using System;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -56,21 +57,36 @@ namespace Api_SisGestion.Repositories
 
         }
 
-        public object UsuarioAdd(Usuario data)
+        public object? UsuarioAdd(Usuario data)
         {
-            using (SqlCommand cmd = new("Insert into Usuario ([Nombre],[Apellido],[NombreUsuario],[Contraseña],[Mail],[Activo]) " +
-                                                "Values (@nombre,@apellido,@nombreUsuario,@contrasenia,@mail,@activo); select @@IDENTITY; ", conn))
+            using (SqlCommand cmd2 = new("SELECT count(*) as cantidad from Usuario where upper(Mail) = @mail " , conn))
             {
-                cmd.Parameters.Add(new SqlParameter("nombre", SqlDbType.VarChar) { Value = data.Nombre!.ToUpper() });
-                cmd.Parameters.Add(new SqlParameter("apellido", SqlDbType.VarChar) { Value = data.Apellido!.ToUpper() });
-                cmd.Parameters.Add(new SqlParameter("nombreusuario", SqlDbType.VarChar) { Value = data.NombreUsuario!.ToUpper() });
-                cmd.Parameters.Add(new SqlParameter("contrasenia", SqlDbType.VarChar) { Value = data.Contrasenia });
-                cmd.Parameters.Add(new SqlParameter("mail", SqlDbType.VarChar) { Value = data.Mail!.ToUpper() });
-                cmd.Parameters.Add(new SqlParameter("activo", SqlDbType.Int) { Value = 1 }); //se agrega activo
+                cmd2.Parameters.Add(new SqlParameter("mail", SqlDbType.VarChar) { Value = data.Mail!.ToUpper() });
+                
 
-                return cmd.ExecuteScalar();
+                SqlDataReader reader = cmd2.ExecuteReader();
+                reader.Read();
+                if (int.Parse(reader["cantidad"].ToString()!)>0)
+                {
+                    return null;
+                    
+                }
+                else
+                {
+                    using (SqlCommand cmd = new("Insert into Usuario ([Nombre],[Apellido],[NombreUsuario],[Contraseña],[Mail],[Activo]) " +
+                                                "Values (@nombre,@apellido,@nombreUsuario,@contrasenia,@mail,@activo); select @@IDENTITY; ", conn))
+                    {
+                        cmd.Parameters.Add(new SqlParameter("nombre", SqlDbType.VarChar) { Value = data.Nombre!.ToUpper() });
+                        cmd.Parameters.Add(new SqlParameter("apellido", SqlDbType.VarChar) { Value = data.Apellido!.ToUpper() });
+                        cmd.Parameters.Add(new SqlParameter("nombreusuario", SqlDbType.VarChar) { Value = data.NombreUsuario!.ToUpper() });
+                        cmd.Parameters.Add(new SqlParameter("contrasenia", SqlDbType.VarChar) { Value = data.Contrasenia });
+                        cmd.Parameters.Add(new SqlParameter("mail", SqlDbType.VarChar) { Value = data.Mail!.ToUpper() });
+                        cmd.Parameters.Add(new SqlParameter("activo", SqlDbType.Int) { Value = 1 }); //se agrega activo
+
+                        return cmd.ExecuteScalar();
+                    }
+                }
             }
-
         }
 
         public int UsuarioUpdate(Usuario data)
