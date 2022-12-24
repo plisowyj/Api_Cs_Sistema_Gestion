@@ -1,0 +1,59 @@
+
+<div class="d-sm-flex align-items-center justify-content-center mb-4">
+  <h1 id="tableLabel">{{titulo}}</h1>
+
+</div>
+
+<div class="row align-items-center justify-content-center">
+
+  <div class="container w-50">
+
+    <form class="user" #prodForm="ngForm" (ngSubmit)="onSubmit(prodForm)">
+      <div class="form-group">
+        <input class="form-control  text-uppercase" type="text" name="descripciones" #descripciones="ngModel" [(ngModel)]="producto.descripciones" required placeholder="Descripciones">
+        <small *ngIf='!descripciones.valid && descripciones.touched' class="invalid-feedback d-block">La descripción  no es válida</small>
+      </div>
+
+      <div class="form-group">
+        <input class="form-control  text-uppercase" type="number" name="costo" #costo="ngModel" [(ngModel)]="producto.costo" required ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" title="Costo">
+        <small *ngIf='!costo.valid && costo.touched' class="invalid-feedback d-block">El costo no es válido</small>
+      </div>
+
+      <div class="form-group">
+        <input class="form-control  text-uppercase" type="number" name="precioVenta" #precioVenta="ngModel" [(ngModel)]="producto.precioVenta" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" title="Precio de Venta">
+        <small *ngIf='!precioVenta.valid && precioVenta.touched' class="invalid-feedback d-block">El precio de venta no es válido</small>
+      </div>
+
+      <div class="form-group">
+        <input class="form-control  text-uppercase" type="number" name="stock" #stock="ngModel" [(ngModel)]="producto.stock" required pattern="[0-9]+" step="1"title="Stock">
+        <small *ngIf='!stock.valid && stock.touched' class="invalid-feedback d-block">El stock no es válido</small>
+      </div>
+
+      <div class="form-group">
+        <select [(ngModel)]="producto.idUsuario" name="idUsuario" class="form-control" (change)="UserChange(idUsuario.value)" #idUsuario="ngModel" required>
+          <option value="" disabled>Seleccione un usuario</option>
+          <option *ngFor="let op of usuarios" [value]="op.id">
+            {{op.nombre}} {{op.apellido}}
+          </option>
+        </select>
+        <small *ngIf='!idUsuario.valid && idUsuario.touched' class="invalid-feedback d-block">El Usuario no es válido</small>
+      </div>
+
+      <div class="form-group">
+        <input class="form-control  text-uppercase" type="text" name="activo" #activo="ngModel" [(ngModel)]="producto.activo" required title="Activo">
+        <small *ngIf='!activo.valid && activo.touched' class="invalid-feedback d-block">El valor activo no es válido</small>
+      </div>
+
+      <div class="d-sm-flex align-items-center justify-content-center mb-4">
+        <input class="btn btn-success mt-4" type="submit" value="{{boton}}" [disabled]="prodForm.invalid">
+
+        <div>
+          <a *ngIf="titulo=='Modificar Usuario'" class="btn btn-primary mt-4 ml-3" [routerLink]="['/plist']">Volver</a>
+          <a class="btn btn-primary mt-4 ml-3" [routerLink]="['/plist']">Volver</a>
+        </div>
+        
+      </div>
+    </form>
+  </div>
+
+</div>

@@ -1,0 +1,30 @@
+
+<div class="d-sm-flex align-items-center justify-content-center mb-4">
+  <h1 id="tableLabel">Login Usuario</h1>
+
+</div>
+
+<div class="row align-items-center justify-content-center">
+
+  <div class="container w-50">
+
+    <form class="user" #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+      <div class="form-group">
+        <input class="form-control  text-uppercase" type="email" name="mail" #mail="ngModel" [(ngModel)]="user.mail" required pattern="[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{1,5}" placeholder="Email">
+        <small *ngIf='!mail.valid && mail.touched' class="invalid-feedback d-block">El email no es válido</small>
+      </div>
+
+      <div class="form-group">
+        <input class="form-control " type="password" name="contrasenia" #contrasenia="ngModel" [(ngModel)]="user.contrasenia" required placeholder="CONTRASEÑA">
+        <small *ngIf='!contrasenia.valid && contrasenia.touched' class="invalid-feedback d-block">La contraseña no es válida</small>
+      </div>
+
+      
+      <div class="d-sm-flex align-items-center justify-content-center mb-4">
+        <input class="btn btn-success mt-4" type="submit" value="Ingresar" [disabled]="loginForm.invalid">
+
+      </div>
+    </form>
+  </div>
+
+</div>

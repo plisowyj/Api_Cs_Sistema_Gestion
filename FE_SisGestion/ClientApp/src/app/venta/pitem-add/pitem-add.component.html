@@ -1,0 +1,35 @@
+
+<div class="d-sm-flex align-items-center justify-content-center mb-4">
+  <h1 id="tableLabel">Agregar item a Venta #{{pid}}</h1>
+
+</div>
+
+<div class="row align-items-center justify-content-center">
+
+  <div class="container w-50">
+
+    <form class="user" #ventaForm="ngForm" (ngSubmit)="onSubmit(ventaForm)">
+
+      <div class="form-group">
+        <select [(ngModel)]="prodVendido.idProducto" name="idProducto" class="form-control" (change)="ProdChange(idProducto.value)" #idProducto="ngModel" required>
+          <option value="" disabled>Seleccione un Producto</option>
+          <option *ngFor="let op of productos" [value]="op.id">
+            Stk=[{{op.stock}}] {{op.descripciones}}
+          </option>
+        </select>
+        <small *ngIf='!idProducto.valid && idProducto.touched' class="invalid-feedback d-block">El Producto no es válido</small>
+      </div>
+
+      <div class="form-group">
+        <input class="form-control text-uppercase" type="text" name="stock" #stock="ngModel" [(ngModel)]="prodVendido.stock" required pattern="[0-9]+" placeholder="Stock">
+        <small *ngIf='!stock.valid && stock.touched' class="invalid-feedback d-block">El stock no es válido</small>
+      </div>
+
+      <div class="d-sm-flex align-items-center justify-content-center mb-4">
+        <input class="btn btn-success mt-4" type="submit" value="Agregar Item" [disabled]="ventaForm.invalid">
+        <a class="btn btn-primary mt-4 ml-3" [routerLink]="['/vlist']">Volver</a>
+      </div>
+    </form>
+  </div>
+
+</div>

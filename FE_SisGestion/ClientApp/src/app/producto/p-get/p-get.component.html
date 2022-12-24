@@ -1,0 +1,43 @@
+<h1 id="tableLabel">Producto #{{pid}}</h1>
+
+<p *ngIf="!producto"><em>No se encontro el producto.</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="producto">
+  <thead>
+    <tr>
+      <th>Dato</th>
+      <th>Valor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Descripción</td>
+      <td>{{ producto.descripciones }}</td>
+    </tr>
+    <tr>
+      <td>Costo</td>
+      <td>{{ producto.costo }}</td>
+    </tr>
+    <tr>
+      <td>Precio de Venta</td>
+      <td>{{ producto.precioVenta }}</td>
+    </tr>
+    <tr>
+      <td>Stock</td>
+      <td>{{ producto.stock }}</td>
+    </tr>
+    <tr>
+      <td>Usuario</td>
+      <td>{{ producto.apeNomUsuario }}</td>
+    </tr>
+    <tr>
+      <td>Activo</td>
+      <td *ngIf="producto.activo"><i class="fa fa-check"></i></td>
+      <td *ngIf="!producto.activo"><i class="fa fa-trash"></i></td>
+      
+    </tr>
+  </tbody>
+</table>
+
+<button (click)="goBack()" type="button" class="btn btn-primary">Volver</button>
+

@@ -1,0 +1,33 @@
+<div>
+  <h2 class="float-left" id="tableLabel">Ventas</h2>
+  <a title="Agregar" class="btn btn-primary mb-4 ml-4" [routerLink]="['/vadd']"><i class="fa fa-plus"></i></a>
+</div>
+
+<p *ngIf="!ventas"><em>No se encontraron ventas.</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="ventas">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Id</th>
+      <th>Comentarios</th>
+      <th>Usuario</th>
+      <th>Items</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let venta of ventas">
+      <td>
+        <a title="Eliminar" class="btn btn-danger btn-xs mr-1" (click)="Delete(venta.id)"><i class="fa fa-trash"></i></a>
+        <a title="Modificar" class="btn btn-info btn-xs" [routerLink]="['/vupdate',venta.id]"><i class="fa fa-edit"></i></a>
+      </td>
+      <td>{{ venta.id }}</td>
+      <td>{{ venta.comentarios }}</td>
+      <td>{{ venta.apeNomUsuario }}</td>
+      <td>
+        <a title="Agregar Item" class="btn btn-secondary btn-xs mr-1" [routerLink]="['/pitemadd',venta.id]"><i class="fa fa-plus"></i></a>
+        <a title="Ver Items" class="btn btn-dark btn-xs" *ngIf="(venta.ventaProducto | json) != ([] | json)" (click)="onSelect(venta.id)"><i class="fa fa-bars"></i></a>
+      </td>
+    </tr>
+  </tbody>
+</table>

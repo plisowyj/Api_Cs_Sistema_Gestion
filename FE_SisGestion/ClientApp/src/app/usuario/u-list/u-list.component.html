@@ -1,0 +1,27 @@
+<h2 id="tableLabel">Usuarios</h2>
+
+<p *ngIf="!usuarios"><em>No se encontraron usuarios.</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="usuarios">
+  <thead>
+    <tr>
+      <td></td>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Nickname</th>
+      <th>Mail</th>
+      <th>Activo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let usuario of usuarios">
+      <td><a *ngIf="usuario.id!=identity.id" title="Modificar Usuario" class="btn btn-info btn-xs" [routerLink]="['/uupdate',usuario.id]"><i class="fa fa-edit"></i></a></td>
+      <td>{{ usuario.nombre }}</td>
+      <td>{{ usuario.apellido }}</td>
+      <td>{{ usuario.nombreUsuario }}</td>
+      <td>{{ usuario.mail }}</td>
+      <td *ngIf="usuario.activo"><a title="Desactivar!" class="btn btn-warning btn-xs" (click)="UserDelete(usuario.id)"><i class="fa fa-check"></i></a></td>
+      <td *ngIf="!usuario.activo"><i title="Desactivado" class="fa fa-trash"></i></td>
+    </tr>
+  </tbody>
+</table>

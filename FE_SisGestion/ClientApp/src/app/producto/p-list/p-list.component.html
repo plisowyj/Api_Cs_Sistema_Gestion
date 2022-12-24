@@ -1,0 +1,33 @@
+<div>
+  <h2 class="float-left" id="tableLabel">Productos</h2>
+  <a title="Agregar" class="btn btn-primary mb-4 ml-4" [routerLink]="['/padd']"><i class="fa fa-plus"></i></a>
+</div>
+
+<p *ngIf="!productos"><em>No se encontraron productos.</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="productos">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Producto Desc.</th>
+      <th>Usuario</th>
+      <th>Pcio Costo</th>
+      <th>Pcio Venta</th>
+      <th>Stock</th>
+      <th>Activo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let producto of productos">
+      <td><a title="Modificar" class="btn btn-info btn-xs" [routerLink]="['/pupdate',producto.id]"><i class="fa fa-edit"></i></a></td>
+      <td>{{ producto.descripciones }}</td>
+      <td>{{ producto.apeNomUsuario }}</td>
+      <td>{{ producto.costo }}</td>
+      <td>{{ producto.precioVenta}}</td>
+      <td>{{ producto.stock }}</td>
+      <td *ngIf="producto.activo"><a title="Desactivar!" class="btn btn-warning btn-xs" (click)="ProductoDelete(producto.id)"><i class="fa fa-check"></i></a></td>
+      <td *ngIf="!producto.activo"><i title="Desactivado" class="fa fa-trash"></i></td>
+      
+    </tr>
+  </tbody>
+</table>

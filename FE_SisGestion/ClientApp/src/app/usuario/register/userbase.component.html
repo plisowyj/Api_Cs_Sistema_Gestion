@@ -1,0 +1,57 @@
+
+<div class="d-sm-flex align-items-center justify-content-center mb-4">
+  <h1 id="tableLabel">{{titulo}}</h1>
+
+</div>
+
+<div class="row align-items-center justify-content-center">
+
+  <div class="container w-50">
+
+    <form class="user" #regForm="ngForm" (ngSubmit)="onSubmit(regForm)">
+      <div class="form-group">
+        <input class="form-control  text-uppercase" type="text" name="nombre" #nombre="ngModel" [(ngModel)]="user.nombre" ng-change="user.nombre = user.nombre.touppercase()" required pattern="[a-zA-ZÀ-ÿ ]+" placeholder="Nombre">
+        <small *ngIf='!nombre.valid && nombre.touched' class="invalid-feedback d-block">El nombre no es válido</small>
+      </div>
+
+      <div class="form-group">
+        <input class="form-control  text-uppercase" type="text" name="apellido" #apellido="ngModel" [(ngModel)]="user.apellido" required pattern="[a-zA-ZÀ-ÿ ]+" placeholder="Apellido">
+        <small *ngIf='!apellido.valid && apellido.touched' class="invalid-feedback d-block">El apellido no es válido</small>
+      </div>
+
+      <div class="form-group">
+        <input class="form-control  text-uppercase" type="text" name="nombreUsuario" #nombreUsuario="ngModel" [(ngModel)]="user.nombreUsuario" required pattern="[a-zA-ZÀ-ÿ ]+" placeholder="Nickname">
+        <small *ngIf='!nombreUsuario.valid && nombreUsuario.touched' class="invalid-feedback d-block">El Nickname no es válido</small>
+      </div>
+
+      <div class="form-group">
+        <input class="form-control  text-uppercase" type="email" name="mail" #mail="ngModel" [(ngModel)]="user.mail" required pattern="[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{1,5}" placeholder="Email">
+        <small *ngIf='!mail.valid && mail.touched' class="invalid-feedback d-block">El email no es válido</small>
+      </div>
+
+      <div class="form-group" *ngIf="pass && !requer">
+        <input class="form-control " type="password" name="contrasenia" #contrasenia="ngModel" [(ngModel)]="user.contrasenia" placeholder="CONTRASEÑA">
+        <small *ngIf='!contrasenia.valid && contrasenia.touched' class="invalid-feedback d-block">La contraseña no es válida</small>
+      </div>
+
+      <div class="form-group" *ngIf="pass && requer">
+        <input class="form-control " type="password" name="contrasenia" #contrasenia="ngModel" [(ngModel)]="user.contrasenia" required placeholder="CONTRASEÑA">
+        <small *ngIf='!contrasenia.valid && contrasenia.touched' class="invalid-feedback d-block">La contraseña no es válida</small>
+      </div>
+
+      <div class="form-group" *ngIf="show">
+        <input class="form-control " type="text" name="activo" #activo="ngModel" [(ngModel)]="user.activo" required placeholder="Activo">
+        <small *ngIf='!activo.valid && activo.touched' class="invalid-feedback d-block">El campo activo no es válido</small>
+      </div>
+
+      <div class="d-sm-flex align-items-center justify-content-center mb-4">
+        <input class="btn btn-success mt-4" type="submit" value="{{boton}}" [disabled]="regForm.invalid">
+
+        <a *ngIf="titulo=='Modificar Usuario'" class="btn btn-primary mt-4 ml-3" [routerLink]="['/ulist']">Volver</a>
+        <a *ngIf="titulo=='Mi Perfil'" class="btn btn-primary mt-4 ml-3" [routerLink]="['/']">Cancelar</a>
+
+      </div>
+    </form>
+  </div>
+
+</div>
