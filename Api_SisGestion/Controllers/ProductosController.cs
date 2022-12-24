@@ -10,39 +10,30 @@ namespace Api_SisGestion.Controllers
     [Route("api/v1/[controller]")]
     public class ProductosController : Controller
     {
-        [HttpGet("list")]
+        [HttpGet("list")] /* Devuelve una lista de TODOS los productos, o NotFound si no hay ninguno */
         public ActionResult<List<Producto>> GetProductos()
         {
-            dynamic conn = DBConnect.ConnDB();
+            ProductoRepository reposiProducto = new(DBConnect.ConnDB());
 
-            if (conn.GetType().ToString() == "System.String")
+            if (reposiProducto.conn.GetType().ToString() == "System.String")
             {
 
-                return ValidationProblem(conn);
+                return ValidationProblem(reposiProducto.conn);
             }
             else
             {
-                List<Producto> lista = new();
                 try
                 {
-                    using (SqlCommand cmd = new("SELECT * FROM Producto", conn))
-                    {
+                    List<Producto> lista = reposiProducto.ProductoList();
 
-                        SqlDataReader reader = cmd.ExecuteReader();
-                        if (reader.HasRows)
-                        {
-                            while (reader.Read())
-                            {
-                                Producto producto = LeerDatos(reader);
-                                lista.Add(producto);
-                            }
-                        }
-                        else
-                        {
-                            return NotFound();
-                        }
+                    if (lista.Count > 0)
+                    {
+                        return Ok(lista);
                     }
-                    return Ok(lista);
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -50,45 +41,36 @@ namespace Api_SisGestion.Controllers
                 }
                 finally
                 {
-                    conn.Close();
+                    reposiProducto.conn.Close();
                 }
             }
         }
 
-        [HttpGet("get/{id}")]
-        public ActionResult<List<Producto>> GetProducto(int id)
+        [HttpGet("get/{id}")] /* Devuelve un producto segun el parametro 'id', o NotFound si no se encontró */
+        public ActionResult<Producto> GetProducto(int id)
         {
-            dynamic conn = DBConnect.ConnDB();
+            ProductoRepository reposiProducto = new(DBConnect.ConnDB());
 
-            if (conn.GetType().ToString() == "System.String")
+            if (reposiProducto.conn.GetType().ToString() == "System.String")
             {
 
-                return ValidationProblem(conn);
+                return ValidationProblem(reposiProducto.conn);
             }
             else
             {
-                List<Producto> lista = new();
                 try
                 {
-                    using (SqlCommand cmd = new("SELECT * FROM Producto where Id = @id", conn))
+                    Producto producto = reposiProducto.ProductoGet(id);
+
+                    if (producto.Id > 0)
                     {
-                        cmd.Parameters.Add(new SqlParameter("id", SqlDbType.Int) { Value = id});
-
-                        SqlDataReader reader = cmd.ExecuteReader();
-                        if (reader.HasRows)
-                        {
-                            reader.Read();
-
-                            Producto producto = LeerDatos(reader);
-                            lista.Add(producto);
-                            
-                        }
-                        else
-                        {
-                            return NotFound();
-                        }
+                        return Ok(producto);
                     }
-                    return Ok(lista);
+                    else
+                    {
+                        return NotFound();
+                    }
+
                 }
                 catch (Exception ex)
                 {
@@ -96,50 +78,35 @@ namespace Api_SisGestion.Controllers
                 }
                 finally
                 {
-                    conn.Close();
+                    reposiProducto.conn.Close();
                 }
             }
         }
 
-        private Producto LeerDatos(SqlDataReader reader)
+        [HttpPost("add")] /* Agrega un nuevo producto: si se insertó, devuelve el id del producto insertado */
+        public ActionResult<string> AddProducto([FromBody] Producto data)
         {
-            return new(int.Parse(reader["Id"].ToString()!),
-                                        reader["Descripciones"].ToString()!.ToUpper()!,
-                                        double.Parse(reader["Costo"].ToString()!),
-                                        double.Parse(reader["PrecioVenta"].ToString()!),
-                                        int.Parse(reader["Stock"].ToString()!),
-                                        int.Parse(reader["IdUsuario"].ToString()!));
+            ProductoRepository reposiProducto = new(DBConnect.ConnDB());
 
-        }
-
-        [HttpDelete("delete")]
-        public ActionResult DeleteProducto([FromBody]int Id)
-        {
-            dynamic conn = DBConnect.ConnDB();
-
-            if (conn.GetType().ToString() == "System.String")
+            if (reposiProducto.conn.GetType().ToString() == "System.String")
             {
-
-                return ValidationProblem(conn);
+                return ValidationProblem(reposiProducto.conn);
             }
             else
-            {                
+            {
                 try
                 {
-                    using (SqlCommand cmd = new("Delete FROM Producto where Id = @Id", conn))
+                    object column = reposiProducto.ProductoAdd(data);
+
+                    if (column != null)
                     {
-                        cmd.Parameters.Add(new SqlParameter("Id", SqlDbType.Int) { Value = Id });
-                        int filas = cmd.ExecuteNonQuery();
-                        if (filas > 0)
-                        {
-                            return Ok("Eliminado");
-                        }
-                        else
-                        {
-                            return NotFound();
-                        }
+
+                        return Ok(column.ToString());
                     }
-                    
+                    else
+                    {
+                        return ValidationProblem("No se recuperó un Id.");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -147,7 +114,78 @@ namespace Api_SisGestion.Controllers
                 }
                 finally
                 {
-                    conn.Close();
+                    reposiProducto.conn.Close();
+                }
+            }
+        }
+
+        [HttpPut("update")] /* actualiza un producto: si se actualizó, devuelve el id del producto actualizado */
+        public ActionResult<string> UpdateProducto([FromBody] Producto data)
+        {
+            ProductoRepository reposiProducto = new(DBConnect.ConnDB());
+
+            if (reposiProducto.conn.GetType().ToString() == "System.String")
+            {
+
+                return ValidationProblem(reposiProducto.conn);
+            }
+            else
+            {
+                try
+                {
+                    int filas = reposiProducto.ProductoUpdate(data);
+                    if (filas > 0)
+                    {
+                        return Ok(data.Id.ToString());
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return ValidationProblem(ex.Message);
+                }
+                finally
+                {
+                    reposiProducto.conn.Close();
+                }
+            }
+        }
+
+        [HttpDelete("delete")]/* realiza una baja lógica de un producto si existe en la DB: devuelve confirmacion ELIMINADO, o NotFound si no se hizo la baja. */
+        public ActionResult<string> DeleteProducto([FromBody]int Id)
+        {
+            ProductoRepository reposiProducto = new(DBConnect.ConnDB());
+
+            if (reposiProducto.conn.GetType().ToString() == "System.String")
+            {
+
+                return ValidationProblem(reposiProducto.conn);
+            }
+            else
+            {
+                try
+                {   //se hace una baja lógica
+                    int filas = reposiProducto.ProductoDelete(Id);
+
+                    if (filas > 0)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return ValidationProblem(ex.Message);
+                }
+                finally
+                {
+                    reposiProducto.conn.Close();
                 }
             }
         }

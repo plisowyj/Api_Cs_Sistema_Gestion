@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Api_SisGestion.Repositories;
-using System.Data.SqlClient;
 using Api_SisGestion.Models;
 
 namespace Api_SisGestion.Controllers
@@ -9,49 +8,30 @@ namespace Api_SisGestion.Controllers
     [Route("api/v1/[controller]")]
     public class ProductosVendidosController : Controller
     {
-        [HttpGet("list")]
-        public ActionResult<List<ProductoVendido>> GetProductosVendidos()
+        [HttpGet("list/{idventa}")] /* Devuelve una lista de TODOS las items de una venta, o NotFound si no hay ninguno */
+        public ActionResult<List<ProductoVendido>> GetProdVendidos(int idventa)
         {
-            dynamic conn = DBConnect.ConnDB();
+            ProductoVendidoRepository reposiProdVend = new(DBConnect.ConnDB());
 
-            if (conn.GetType().ToString() == "System.String")
+            if (reposiProdVend.conn.GetType().ToString() == "System.String")
             {
 
-                return ValidationProblem(conn);
+                return ValidationProblem(reposiProdVend.conn);
             }
             else
             {
-                List<ProductoVendido> lista = new();
                 try
                 {
-                    using (SqlCommand cmd = new("SELECT v.Comentarios as Venta, b.Descripciones as Producto, a.* "+
-                                                "FROM ProductoVendido a "+
-                                                "inner join Producto b on b.Id = a.IdProducto "+
-                                                "inner join Venta v on v.Id = a.IdVenta "+
-                                                "order by 1,2", conn))
-                    {
+                    List<ProductoVendido> lista = reposiProdVend.ProdVendidoList(idventa);
 
-                        SqlDataReader reader = cmd.ExecuteReader();
-                        if (reader.HasRows)
-                        {
-                            while (reader.Read())
-                            {
-                                ProductoVendido productovendido = new(int.Parse(reader["Id"].ToString()!),
-                                                        int.Parse(reader["IdProducto"].ToString()!),
-                                                        int.Parse(reader["Stock"].ToString()!),
-                                                        int.Parse(reader["IdVenta"].ToString()!),
-                                                        reader["Venta"].ToString()!.ToUpper()!,
-                                                        reader["Producto"].ToString()!.ToUpper()!);
-                                lista.Add(productovendido);
-                            }
-                        }
-                        else
-                        {
-                            return NotFound();
-                        }
+                    if (lista.Count > 0)
+                    {
+                        return Ok(lista);
                     }
-              
-                    return Ok(lista);
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -59,9 +39,86 @@ namespace Api_SisGestion.Controllers
                 }
                 finally
                 {
-                    conn.Close();
+                    reposiProdVend.conn.Close();
                 }
             }
         }
+
+        [HttpPost("add")] /* Agrega un item a una venta y descuenta del stock: si se insertó, devuelve el id del item insertado  */
+        public ActionResult<string> AddVenta([FromBody] ProductoVendido data)
+        {
+            ProductoVendidoRepository reposiProdVend = new(DBConnect.ConnDB());
+
+            if (reposiProdVend.conn.GetType().ToString() == "System.String")
+            {
+                return ValidationProblem(reposiProdVend.conn);
+            }
+            else
+            {
+                try
+                {
+                    object column = reposiProdVend.ProdVendidoAdd(data);
+
+                    if (column != null)
+                    {
+
+                        return Ok(column.ToString());
+                    }
+                    else
+                    {
+                        return ValidationProblem("No se recuperó un Id.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return ValidationProblem(ex.Message);
+                }
+                finally
+                {
+                    reposiProdVend.conn.Close();
+                }
+            }
+        }
+        /* ============================================================================================================================= */
+        /* [HttpPut("update")] => no se incluye método update en este caso, porque es mas sencillo eliminar un item y volverlo a agregar */
+        /* ============================================================================================================================= */
+
+
+        [HttpDelete("delete")]/* realiza una baja de un item en una venta y reintegra stock: si no pudo hacer delete devuelve 0, sino el ID dado de baja */
+        public ActionResult<string> DeleteVenta([FromBody] int Id)
+        {
+            ProductoVendidoRepository reposiProdVend = new(DBConnect.ConnDB());
+
+            if (reposiProdVend.conn.GetType().ToString() == "System.String")
+            {
+
+                return ValidationProblem(reposiProdVend.conn);
+            }
+            else
+            {
+                try
+                {
+                    int filas = reposiProdVend.ProdVendidoDelete(Id);
+
+                    if (filas > 0)
+                    {
+                        return Ok();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return ValidationProblem(ex.Message);
+                }
+                finally
+                {
+                    reposiProdVend.conn.Close();
+                }
+            }
+        }
+
     }
 }

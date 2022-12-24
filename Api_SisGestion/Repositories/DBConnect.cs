@@ -1,8 +1,5 @@
 ﻿
 using System.Data.SqlClient;
-using System.IO;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 
 namespace Api_SisGestion.Repositories
 {
@@ -35,6 +32,15 @@ namespace Api_SisGestion.Repositories
             }
 
 
+        }
+
+        public static string Organization()
+        {
+            var builder = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appSettings.json", optional: true, reloadOnChange: true);
+            IConfiguration _configuration = builder.Build();
+            return _configuration.GetConnectionString("Organization");
         }
 
 

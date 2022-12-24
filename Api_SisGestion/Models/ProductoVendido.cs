@@ -3,20 +3,27 @@
     public class ProductoVendido
     {
         public int Id { get; set; }
-        public int IdProducto { get; set; }
         public int Stock { get; set; }
+        public int IdProducto { get; set; }
         public int IdVenta { get; set; }
-        public string Venta { get; set; }
-        public string Producto { get; set; }
+        public string? ProductoDesc { get; set; }
 
-        public ProductoVendido(int id, int idProducto, int stock, int idVenta, string venta, string producto)
+        public ProductoVendido(int id, int stock, int idProducto, int idVenta, string productoDesc)
         {
             Id = id;
-            IdProducto = idProducto;
             Stock = stock;
+            IdProducto = idProducto;
             IdVenta = idVenta;
-            Venta = venta;
-            Producto = producto;
+            ProductoDesc = productoDesc;
+        }
+
+        public ProductoVendido()
+        {
+            Id = 0;
+            Stock = 0;
+            IdProducto = 0;
+            IdVenta = 0;
+            ProductoDesc = null;
         }
     }
 }
